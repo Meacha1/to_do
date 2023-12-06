@@ -1,11 +1,15 @@
 import { IsNotEmpty, IsNumber, IsString,  } from 'class-validator';
 
-export class CreateToDoDto {
+export class CreateToDoListDto {
     @IsString()
     @IsNotEmpty()
     title: string;
 
     @IsNumber()
     @IsNotEmpty()
-    total: number;
+    percentComplete: number;
+
+    @IsNumber()
+    @IsNotEmpty()
+    amount: number;
 }

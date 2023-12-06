@@ -7,8 +7,10 @@ export class ToDo {
     id: number;
 
     @IsString()
+    @Column()
     title: string;
 
     @IsNumber()
-    amount: number;
+    @Column()
+    total: number;
 }
