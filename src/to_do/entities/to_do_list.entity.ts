@@ -4,7 +4,7 @@ import { IsNumber, IsString } from 'class-validator';
 @Entity()
 export class ToDoList {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: string;
 
     @IsString()
     @Column()
@@ -13,6 +13,10 @@ export class ToDoList {
     @IsNumber()
     @Column()
     percentComplete: number;
+
+    @IsString()
+    @Column()
+    parentId: string;
 
     @IsNumber()
     @Column()

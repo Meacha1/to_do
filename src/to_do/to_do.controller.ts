@@ -19,16 +19,20 @@ export class ToDoController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.toDoService.findOne(+id);
+    return this.toDoService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateToDoDto: UpdateToDoDto) {
-    return this.toDoService.update(+id, updateToDoDto);
+    return this.toDoService.update(id, updateToDoDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.toDoService.remove(+id);
+    return this.toDoService.remove(id);
   }
+
+
+  
+
 }
