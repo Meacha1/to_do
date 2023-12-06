@@ -3,7 +3,7 @@ import { IsNumber, IsString } from 'class-validator';
 
 @Entity()
 export class ToDoList {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @IsString()

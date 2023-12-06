@@ -1,14 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } from '@nestjs/common';
 import { ToDoListService } from './to_do_list.service';
 import { CreateToDoListDto } from './dto/create-to_do_list.dto';
 import { UpdateToListDoDto } from './dto/update-to_do_list.dto';
 
 @Controller('to-do-list')
-export class ToDoController {
+export class ToDoListController {
   constructor(private readonly toDoListService: ToDoListService) {}
 
   @Post()
-  create(@Body() createToDoListDto: CreateToDoListDto) {
+  create(@Body(ValidationPipe) createToDoListDto: CreateToDoListDto) {
     return this.toDoListService.create(createToDoListDto);
   }
 
@@ -17,13 +17,18 @@ export class ToDoController {
     return this.toDoListService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.toDoListService.findOne(id);
+  @Get('/list/:parentId')
+  findMylist(@Param('parentId') parentId: string) {
+    return this.toDoListService.findMylist(parentId);
+  }
+
+  @Get('/:toDoTitle/:id')
+  findOne(@Param('id') id: string, @Param('toDoTitle') toDoTitle: string) {
+   return this.toDoListService.findOne(toDoTitle, id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateToDoListDto: UpdateToListDoDto) {
+  update(@Param('id') id: string, @Body(ValidationPipe) updateToDoListDto: UpdateToListDoDto) {
     return this.toDoListService.update(id, updateToDoListDto);
   }
 

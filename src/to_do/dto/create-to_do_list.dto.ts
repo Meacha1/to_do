@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString,  } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, IsUUID,  } from 'class-validator';
 
 export class CreateToDoListDto {
     @IsString()
@@ -9,7 +9,12 @@ export class CreateToDoListDto {
     @IsNotEmpty()
     percentComplete: number;
 
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
-    amount: number;
+    @IsUUID()
+    parentId: string;
+
+    // @IsNumber()
+    // @IsNotEmpty()
+    // amount: number;
 }
