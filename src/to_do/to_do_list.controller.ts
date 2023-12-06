@@ -17,10 +17,10 @@ export class ToDoListController {
     return this.toDoListService.findAll();
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body(ValidationPipe) updateToDoListDto: UpdateToListDoDto) {
-  //   return this.toDoListService.update(id, updateToDoListDto);
-  // }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateToDoListDto: UpdateToListDoDto) {
+    return this.toDoListService.update(id, updateToDoListDto);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

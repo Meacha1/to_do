@@ -32,6 +32,14 @@ export class ToDoListService {
     otherToDoList.forEach(element => {
       otherToDoListAmount += element.amount;
     });
+
+    let otherToDoListPercent = 0;
+    otherToDoList.forEach(element => {
+      otherToDoListPercent += element.percentComplete;
+    });
+    if (otherToDoListPercent + body.percentComplete > 100) {
+      throw new BadRequestException('Total percentComplete of ToDoList is greater than 100');
+    }
     const remainingAmount = toDo.total - otherToDoListAmount;
     const thisMaxamount = body.percentComplete * toDo.total / 100.0;
     const thisAmount = Math.min(remainingAmount, thisMaxamount);
@@ -44,26 +52,44 @@ export class ToDoListService {
   }
 
   async update(id: string, updateToDoListDto: UpdateToListDoDto) {
-    let updatedToDo = await this.toDoListRepository.findOne({where: {id: id}});
-    if (!updatedToDo) {
+    let toBeUpdated = await this.toDoListRepository.findOne({where: {id: id}});
+    if (!toBeUpdated) {
       throw new NotFoundException('ToDo not found');
     }
-    const toDo = await this.toDoTreeRepository.findOne({where: {id: updatedToDo.parentId}})
+    const toDo = await this.toDoTreeRepository.findOne({where: {id: toBeUpdated.parentId}})
     if (!toDo) {
       throw new NotFoundException('ToDo not found');
     }
-    const otherToDoList = await this.toDoListTreeRepository.find({where: {parentId: updatedToDo.parentId}});
+    const otherToDoList = await this.toDoListTreeRepository.find({where: {parentId: toBeUpdated.parentId}});
+    if (updateToDoListDto.percentComplete === undefined) {
+      toBeUpdated = { ...toBeUpdated, ...updateToDoListDto };
+      await this.toDoListRepository.save(toBeUpdated);
+      return;
+    }
+
     let otherToDoListAmount = 0;
     otherToDoList.forEach(element => {
       if (element.id !== id) {
         otherToDoListAmount += element.amount;
       }
     });
+
+    let percentageSum = 0;
+    if (updateToDoListDto.percentComplete !== undefined) {
+      otherToDoList.forEach(element => {
+        percentageSum += element.percentComplete;
+      });
+      percentageSum -= toBeUpdated.percentComplete;
+      if (Number(percentageSum) + Number(updateToDoListDto.percentComplete) > 100) {
+        throw new BadRequestException('Total percentComplete of ToDoList is greater than 100');
+      }
+    }
+
     const remainingAmount = toDo.total - otherToDoListAmount;
-    const thisMaxamount = updateToDoListDto.percentComplete * toDo.total / 100.0;
+    const thisMaxamount = await updateToDoListDto.percentComplete * toDo.total / 100.0;
     const thisAmount = Math.min(remainingAmount, thisMaxamount);
-    updatedToDo = { ...updatedToDo, ...updateToDoListDto, amount: thisAmount };
-    await this.toDoListRepository.save(updatedToDo);
+    const Updated = { ...toBeUpdated, ...updateToDoListDto, amount: thisAmount };
+    await this.toDoListRepository.save(Updated);
   }
 
   async remove(id: string) {
