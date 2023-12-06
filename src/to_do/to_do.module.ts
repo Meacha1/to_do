@@ -6,12 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ToDo } from './entities/to_do.entity';
 import { ToDoList } from './entities/to_do_list.entity';
 import { ToDoListService } from './to_do_list.service';
+import { Type } from 'class-transformer';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ToDo]),
-    TypeOrmModule.forFeature([ToDoList]),
-
+    TypeOrmModule.forFeature([ToDo, ToDoList]),
   ],
   controllers: [ToDoController, ToDoListController],
   providers: [ToDoService, ToDoListService],

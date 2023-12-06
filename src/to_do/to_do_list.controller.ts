@@ -8,7 +8,7 @@ export class ToDoListController {
   constructor(private readonly toDoListService: ToDoListService) {}
 
   @Post()
-  create(@Body(ValidationPipe) createToDoListDto: CreateToDoListDto) {
+  create(@Body() createToDoListDto: CreateToDoListDto) {
     return this.toDoListService.create(createToDoListDto);
   }
 
@@ -17,20 +17,10 @@ export class ToDoListController {
     return this.toDoListService.findAll();
   }
 
-  @Get('/list/:parentId')
-  findMylist(@Param('parentId') parentId: string) {
-    return this.toDoListService.findMylist(parentId);
-  }
-
-  @Get('/:toDoTitle/:id')
-  findOne(@Param('id') id: string, @Param('toDoTitle') toDoTitle: string) {
-   return this.toDoListService.findOne(toDoTitle, id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body(ValidationPipe) updateToDoListDto: UpdateToListDoDto) {
-    return this.toDoListService.update(id, updateToDoListDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body(ValidationPipe) updateToDoListDto: UpdateToListDoDto) {
+  //   return this.toDoListService.update(id, updateToDoListDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
