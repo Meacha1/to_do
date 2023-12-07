@@ -5,7 +5,7 @@ import { ToDoList } from './to_do_list.entity';
 
 @Entity()
 @Tree('closure-table', {
-    closureTableName: 'to_do_closure',
+    closureTableName: 'to_do',
     ancestorColumnName: (column) => 'ancestor_' + column.propertyName,
     descendantColumnName: (column) => 'descendant_' + column.propertyName,
 })
@@ -25,5 +25,7 @@ export class ToDo {
     parent: ToDo;
   
     @TreeChildren()
-    todoLists: ToDoList[];
+    todoLists: ToDoList[
+        | 'parentId'
+    ];
 }

@@ -37,7 +37,7 @@ export class ToDoListService {
     otherToDoList.forEach(element => {
       otherToDoListPercent += element.percentComplete;
     });
-    if (otherToDoListPercent + body.percentComplete > 100) {
+    if (Number(otherToDoListPercent) + Number(body.percentComplete) > 100) {
       throw new BadRequestException('Total percentComplete of ToDoList is greater than 100');
     }
     const remainingAmount = toDo.total - otherToDoListAmount;
