@@ -19,14 +19,13 @@ export class ToDoService {
   ) {}
 
   async create(createToDoDto: CreateToDoDto) {
-    console.log(createToDoDto);
     const toDo = this.toDoTreeRepository.create(createToDoDto);
     await this.toDoTreeRepository.insert(toDo);
   }
 
 
   async findAll(): Promise<ToDo[]> {
-    return this.toDoTreeRepository.find();
+    return this.toDoTreeRepository.findTrees();
   }
 
   async findOne(id: string): Promise<ToDo> {

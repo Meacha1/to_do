@@ -4,7 +4,11 @@ import { ToDoList } from './to_do_list.entity';
 
 
 @Entity()
-@Tree('closure-table')
+@Tree('closure-table', {
+    closureTableName: 'to_do_closure',
+    ancestorColumnName: (column) => 'ancestor_' + column.propertyName,
+    descendantColumnName: (column) => 'descendant_' + column.propertyName,
+})
 export class ToDo {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -16,6 +20,9 @@ export class ToDo {
     @IsNumber()
     @Column()
     total: number;
+
+    @TreeParent()
+    parent: ToDo;
   
     @TreeChildren()
     todoLists: ToDoList[];
