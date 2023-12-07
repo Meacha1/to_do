@@ -40,7 +40,7 @@ async findMyToDoList(toDoTitle: string, id: string): Promise<ToDoList[]> {
   if (!todo) {
     throw new NotFoundException('ToDo not found');
   }
-  const myToDoList = await this.toDoListRepository.find({where: {parentId: todo.id}})
+  const myToDoList = await this.toDoListRepository.find({where: {parent_id: todo.id}})
   if (!myToDoList) {
     throw new NotFoundException('ToDoList not found');
   }

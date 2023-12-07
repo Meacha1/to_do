@@ -23,11 +23,11 @@ export class ToDoListService {
 
   async create(createToDoListDto: CreateToDoListDto) {
     const body = await createToDoListDto;
-    const toDo = await this.toDoTreeRepository.findOne({where: {id: body.parentId}})
+    const toDo = await this.toDoTreeRepository.findOne({where: {id: body.parent_id}})
     if (!toDo) {
       throw new NotFoundException('ToDo not found');
     }
-    const otherToDoList = await this.toDoListTreeRepository.find({where: {parentId: body.parentId}});
+    const otherToDoList = await this.toDoListTreeRepository.find({where: {parent_id: body.parent_id}});
     let otherToDoListAmount = 0;
     otherToDoList.forEach(element => {
       otherToDoListAmount += element.amount;
@@ -35,13 +35,13 @@ export class ToDoListService {
 
     let otherToDoListPercent = 0;
     otherToDoList.forEach(element => {
-      otherToDoListPercent += element.percentComplete;
+      otherToDoListPercent += element.percentageComplete;
     });
-    if (Number(otherToDoListPercent) + Number(body.percentComplete) > 100) {
-      throw new BadRequestException('Total percentComplete of ToDoList is greater than 100');
+    if (Number(otherToDoListPercent) + Number(body.percentageComplete) > 100) {
+      throw new BadRequestException('Total percentageComplete of ToDoList is greater than 100');
     }
     const remainingAmount = toDo.total - otherToDoListAmount;
-    const thisMaxamount = body.percentComplete * toDo.total / 100.0;
+    const thisMaxamount = body.percentageComplete * toDo.total / 100.0;
     const thisAmount = Math.min(remainingAmount, thisMaxamount);
     const toDoList = {...body, amount: thisAmount};
     await this.toDoListRepository.insert(toDoList);
@@ -56,12 +56,12 @@ export class ToDoListService {
     if (!toBeUpdated) {
       throw new NotFoundException('ToDo not found');
     }
-    const toDo = await this.toDoTreeRepository.findOne({where: {id: toBeUpdated.parentId}})
+    const toDo = await this.toDoTreeRepository.findOne({where: {id: toBeUpdated.parent_id}})
     if (!toDo) {
       throw new NotFoundException('ToDo not found');
     }
-    const otherToDoList = await this.toDoListTreeRepository.find({where: {parentId: toBeUpdated.parentId}});
-    if (updateToDoListDto.percentComplete === undefined) {
+    const otherToDoList = await this.toDoListTreeRepository.find({where: {parent_id: toBeUpdated.parent_id}});
+    if (updateToDoListDto.percentageComplete === undefined) {
       toBeUpdated = { ...toBeUpdated, ...updateToDoListDto };
       await this.toDoListRepository.save(toBeUpdated);
       return;
@@ -75,19 +75,20 @@ export class ToDoListService {
     });
 
     let percentageSum = 0;
-    if (updateToDoListDto.percentComplete !== undefined) {
+    if (updateToDoListDto.percentageComplete !== undefined) {
       otherToDoList.forEach(element => {
-        percentageSum += element.percentComplete;
+        percentageSum += element.percentageComplete;
       });
-      percentageSum -= toBeUpdated.percentComplete;
-      if (Number(percentageSum) + Number(updateToDoListDto.percentComplete) > 100) {
-        throw new BadRequestException('Total percentComplete of ToDoList is greater than 100');
+      percentageSum -= toBeUpdated.percentageComplete;
+      if (Number(percentageSum) + Number(updateToDoListDto.percentageComplete) > 100) {
+        throw new BadRequestException('Total percentageComplete of ToDoList is greater than 100');
       }
     }
 
     const remainingAmount = toDo.total - otherToDoListAmount;
-    const thisMaxamount = await updateToDoListDto.percentComplete * toDo.total / 100.0;
+    const thisMaxamount = await updateToDoListDto.percentageComplete * toDo.total / 100.0;
     const thisAmount = Math.min(remainingAmount, thisMaxamount);
+    console.log(`thisAmount: ${thisAmount}`);
     const Updated = { ...toBeUpdated, ...updateToDoListDto, amount: thisAmount };
     await this.toDoListRepository.save(Updated);
   }

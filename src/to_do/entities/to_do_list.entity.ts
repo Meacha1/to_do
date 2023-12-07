@@ -18,14 +18,14 @@ export class ToDoList {
 
     @IsNumber()
     @Column()
-    percentComplete: number;
+    percentageComplete: number;
 
     @IsNumber()
     @Column()
     amount: number;
 
     @Column()
-    parentId: string;
+    parent_id: string;
 
     @TreeParent()
     parent: ToDo;

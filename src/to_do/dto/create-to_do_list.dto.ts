@@ -8,11 +8,11 @@ export class CreateToDoListDto {
 
     @IsNumber()
     @IsNotEmpty()
-    percentComplete: number;
+    percentageComplete: number;
 
     @IsString()
     @IsUUID()
-    parentId?: string;
+    parent_id?: string;
 
     // todo: CreateToDoDto;
 }
