@@ -25,7 +25,5 @@ export class ToDo {
     parent: ToDo;
   
     @TreeChildren()
-    todoLists: ToDoList[
-        | 'parentId'
-    ];
+    todoLists: ToDoList[];
 }

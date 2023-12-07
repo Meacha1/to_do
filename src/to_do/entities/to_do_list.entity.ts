@@ -3,7 +3,11 @@ import { IsNumber, IsString } from 'class-validator';
 import { ToDo } from './to_do.entity';
 
 @Entity()
-@Tree('closure-table')
+@Tree('closure-table', {
+    closureTableName: 'to_do_list',
+    ancestorColumnName: (column) => 'ancestor_' + column.propertyName,
+    descendantColumnName: (column) => 'descendant_' + column.propertyName,
+})
 export class ToDoList {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -22,4 +26,7 @@ export class ToDoList {
 
     @Column()
     parentId: string;
+
+    @TreeParent()
+    parent: ToDo;
 }
