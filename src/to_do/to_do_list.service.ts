@@ -13,10 +13,6 @@ export class ToDoListService {
     @InjectRepository(ToDoList)
     private readonly toDoListRepository: Repository<ToDoList>,
     @InjectRepository(ToDo)
-    private readonly toDoRepository: Repository<ToDo>,
-    @InjectRepository(ToDoList)
-    private readonly toDoListTreeRepository: TreeRepository<ToDoList>,
-    @InjectRepository(ToDo)
     private readonly toDoTreeRepository: TreeRepository<ToDo>,
   ) {}
 
@@ -27,7 +23,7 @@ export class ToDoListService {
     if (!toDo) {
       throw new NotFoundException('ToDo not found');
     }
-    const otherToDoList = await this.toDoListTreeRepository.find({where: {parent_id: body.parent_id}});
+    const otherToDoList = await this.toDoListRepository.find({where: {parent_id: body.parent_id}});
     let otherToDoListAmount = 0;
     otherToDoList.forEach(element => {
       otherToDoListAmount += element.amount;
@@ -60,7 +56,7 @@ export class ToDoListService {
     if (!toDo) {
       throw new NotFoundException('ToDo not found');
     }
-    const otherToDoList = await this.toDoListTreeRepository.find({where: {parent_id: toBeUpdated.parent_id}});
+    const otherToDoList = await this.toDoListRepository.find({where: {parent_id: toBeUpdated.parent_id}});
     if (updateToDoListDto.percentageComplete === undefined) {
       toBeUpdated = { ...toBeUpdated, ...updateToDoListDto };
       await this.toDoListRepository.save(toBeUpdated);
