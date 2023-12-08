@@ -31,6 +31,7 @@ export class ToDoController {
 
 
   @Patch(':id')
+  @UsePipes(ValidationPipe)
   update(@Param('id') id: string, @Body() updateToDoDto: UpdateToDoDto) {
     return this.toDoService.update(id, updateToDoDto);
   }
@@ -39,8 +40,4 @@ export class ToDoController {
   remove(@Param('id') id: string) {
     return this.toDoService.remove(id);
   }
-
-
-  
-
 }
