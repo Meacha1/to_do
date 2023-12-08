@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ToDoService } from './to_do.service';
 import { CreateToDoDto } from './dto/create-to_do.dto';
 import { UpdateToDoDto } from './dto/update-to_do.dto';
@@ -8,6 +8,7 @@ export class ToDoController {
   constructor(private readonly toDoService: ToDoService) {}
 
   @Post()
+  @UsePipes(ValidationPipe)
   create(@Body() createToDoDto: CreateToDoDto) {
     return this.toDoService.create(createToDoDto);
   }

@@ -29,7 +29,11 @@ export class ToDoService {
   }
 
   async findOne(id: string): Promise<ToDo> {
-    return await this.toDoTreeRepository.findOne({ where: { id: id } });
+    const found = await this.toDoTreeRepository.findOne({ where: { id: id } });
+    if (!found) {
+      throw new NotFoundException('ToDo not found');
+    }
+    return found;
   }
 
 async findMyToDoList(toDoTitle: string, id: string): Promise<ToDoList[]> {
@@ -50,9 +54,6 @@ async findMyToDoList(toDoTitle: string, id: string): Promise<ToDoList[]> {
 
   async update(id: string, updateToDoDto: UpdateToDoDto) {
     let updatedToDo = await this.findOne(id);
-    if (!updatedToDo) {
-      throw new NotFoundException('ToDo not found');
-    }
     updatedToDo = { ...updatedToDo, ...updateToDoDto };
     await this.toDoRepository.save(updatedToDo);
   }
