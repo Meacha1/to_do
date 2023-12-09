@@ -13,17 +13,17 @@ export class ToDoListService {
     @InjectRepository(ToDoList)
     private readonly toDoListRepository: Repository<ToDoList>,
     @InjectRepository(ToDo)
-    private readonly toDoTreeRepository: TreeRepository<ToDo>,
+    private readonly toDoRepository: Repository<ToDo>,
   ) {}
 
 
   async create(createToDoListDto: CreateToDoListDto) {
     const body = await createToDoListDto;
-    const toDo = await this.toDoTreeRepository.findOne({where: {id: body.parent_id}})
+    const toDo = await this.toDoRepository.findOne({where: {id: body.parentId}})
     if (!toDo) {
       throw new NotFoundException('ToDo not found');
     }
-    const otherToDoList = await this.toDoListRepository.find({where: {parent_id: body.parent_id}});
+    const otherToDoList = await this.toDoListRepository.find({where: {parentId: body.parentId}});
     let otherToDoListAmount = 0;
     otherToDoList.forEach(element => {
       otherToDoListAmount += element.amount;
@@ -41,6 +41,7 @@ export class ToDoListService {
     const thisAmount = Math.min(remainingAmount, thisMaxamount);
     const toDoList = {...body, amount: thisAmount};
     await this.toDoListRepository.insert(toDoList);
+    return toDoList;
   }
 
   async findAll() {
@@ -52,11 +53,11 @@ export class ToDoListService {
     if (!toBeUpdated) {
       throw new NotFoundException('ToDo not found');
     }
-    const toDo = await this.toDoTreeRepository.findOne({where: {id: toBeUpdated.parent_id}})
+    const toDo = await this.toDoRepository.findOne({where: {id: toBeUpdated.parentId}})
     if (!toDo) {
       throw new NotFoundException('ToDo not found');
     }
-    const otherToDoList = await this.toDoListRepository.find({where: {parent_id: toBeUpdated.parent_id}});
+    const otherToDoList = await this.toDoListRepository.find({where: {parentId: toBeUpdated.parentId}});
     if (updateToDoListDto.percentageComplete === undefined) {
       toBeUpdated = { ...toBeUpdated, ...updateToDoListDto };
       await this.toDoListRepository.save(toBeUpdated);

@@ -19,8 +19,9 @@ export class ToDoService {
   ) {}
 
   async create(createToDoDto: CreateToDoDto) {
-    const toDo = this.toDoTreeRepository.create(createToDoDto);
-    await this.toDoTreeRepository.insert(toDo);
+    const toDo = this.toDoRepository.create(createToDoDto);
+    await this.toDoRepository.insert(toDo);
+    return toDo;
   }
 
 
@@ -44,7 +45,7 @@ async findMyToDoList(toDoTitle: string, id: string): Promise<ToDoList[]> {
   if (!todo) {
     throw new NotFoundException('ToDo not found');
   }
-  const myToDoList = await this.toDoListRepository.find({where: {parent_id: todo.id}})
+  const myToDoList = await this.toDoListRepository.find({where: {parentId: todo.id}})
   if (!myToDoList) {
     throw new NotFoundException('ToDoList not found');
   }

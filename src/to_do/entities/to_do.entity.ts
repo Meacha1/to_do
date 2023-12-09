@@ -1,14 +1,10 @@
-import { Entity, Column, Tree, PrimaryGeneratedColumn, TreeChildren, TreeParent } from 'typeorm';
+import { Entity, Column, Tree, PrimaryGeneratedColumn, TreeChildren, TreeParent, TreeLevelColumn } from 'typeorm';
 import { IsNumber, IsString } from 'class-validator';
 import { ToDoList } from './to_do_list.entity';
 
 
 @Entity()
-@Tree('closure-table', {
-    closureTableName: 'to_do',
-    ancestorColumnName: (column) => 'ancestor_' + column.propertyName,
-    descendantColumnName: (column) => 'descendant_' + column.propertyName,
-})
+@Tree("materialized-path")
 export class ToDo {
     @PrimaryGeneratedColumn('uuid')
     id: string;

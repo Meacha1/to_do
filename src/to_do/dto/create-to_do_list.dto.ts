@@ -12,7 +12,7 @@ export class CreateToDoListDto {
 
     @IsString()
     @IsUUID()
-    parent_id?: string;
+    parentId?: string;
 
     // todo: CreateToDoDto;
 }
