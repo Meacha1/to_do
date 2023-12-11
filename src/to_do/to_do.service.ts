@@ -4,7 +4,7 @@ import { UpdateToDoDto } from './dto/update-to_do.dto';
 import { ToDo } from './entities/to_do.entity';
 import { ToDoList } from './entities/to_do_list.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, TreeRepository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { isString, isUUID, max } from 'class-validator';
 
 @Injectable()
@@ -14,8 +14,6 @@ export class ToDoService {
     private readonly toDoRepository: Repository<ToDo>,
     @InjectRepository(ToDoList)
     private readonly toDoListRepository: Repository<ToDoList>,
-    @InjectRepository(ToDo)
-    private readonly toDoTreeRepository: TreeRepository<ToDo>,
   ) {}
 
   async create(createToDoDto: CreateToDoDto) {
@@ -26,11 +24,11 @@ export class ToDoService {
 
 
   async findAll(): Promise<ToDo[]> {
-    return this.toDoTreeRepository.findTrees();
+    return this.toDoRepository.find({ relations: ['toDoList'] });
   }
 
   async findOne(id: string): Promise<ToDo> {
-    const found = await this.toDoTreeRepository.findOne({ where: { id: id } });
+    const found = await this.toDoRepository.findOne({ where: { id: id } });
     if (!found) {
       throw new NotFoundException('ToDo not found');
     }

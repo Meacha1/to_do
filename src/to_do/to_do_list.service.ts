@@ -4,8 +4,8 @@ import { UpdateToListDoDto } from './dto/update-to_do_list.dto';
 import { ToDo } from './entities/to_do.entity';
 import { ToDoList } from './entities/to_do_list.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, TreeRepository } from 'typeorm';
-import { isString, isUUID, max } from 'class-validator';
+import { Repository } from 'typeorm';
+import { isUUID } from 'class-validator';
 
 @Injectable()
 export class ToDoListService {
@@ -18,12 +18,11 @@ export class ToDoListService {
 
 
   async create(createToDoListDto: CreateToDoListDto) {
-    const body = await createToDoListDto;
-    const toDo = await this.toDoRepository.findOne({where: {id: body.parentId}})
+    const toDo = await this.toDoRepository.findOne({where: {id: createToDoListDto.parentId}})
     if (!toDo) {
       throw new NotFoundException('ToDo not found');
     }
-    const otherToDoList = await this.toDoListRepository.find({where: {parentId: body.parentId}});
+    const otherToDoList = await this.toDoListRepository.find({where: {parentId: createToDoListDto.parentId}});
     let otherToDoListAmount = 0;
     otherToDoList.forEach(element => {
       otherToDoListAmount += element.amount;
@@ -33,14 +32,15 @@ export class ToDoListService {
     otherToDoList.forEach(element => {
       otherToDoListPercent += element.percentageComplete;
     });
-    if (Number(otherToDoListPercent) + Number(body.percentageComplete) > 100) {
+    if (Number(otherToDoListPercent) + Number(createToDoListDto.percentageComplete) > 100) {
       throw new BadRequestException('Total percentageComplete of ToDoList is greater than 100');
     }
     const remainingAmount = toDo.total - otherToDoListAmount;
-    const thisMaxamount = body.percentageComplete * toDo.total / 100.0;
+    const thisMaxamount = createToDoListDto.percentageComplete * toDo.total / 100.0;
     const thisAmount = Math.min(remainingAmount, thisMaxamount);
-    const toDoList = {...body, amount: thisAmount};
-    await this.toDoListRepository.insert(toDoList);
+    const toDoList = {...createToDoListDto, amount: thisAmount};
+    await this.toDoListRepository.create(toDoList);
+    await this.toDoListRepository.save(toDoList);    
     return toDoList;
   }
 
@@ -60,7 +60,7 @@ export class ToDoListService {
     const otherToDoList = await this.toDoListRepository.find({where: {parentId: toBeUpdated.parentId}});
     if (updateToDoListDto.percentageComplete === undefined) {
       toBeUpdated = { ...toBeUpdated, ...updateToDoListDto };
-      await this.toDoListRepository.save(toBeUpdated);
+      await this.toDoListRepository.update(id, toBeUpdated);
       return;
     }
 
@@ -83,11 +83,10 @@ export class ToDoListService {
     }
 
     const remainingAmount = toDo.total - otherToDoListAmount;
-    const thisMaxamount = await updateToDoListDto.percentageComplete * toDo.total / 100.0;
+    const thisMaxamount = updateToDoListDto.percentageComplete * toDo.total / 100.0;
     const thisAmount = Math.min(remainingAmount, thisMaxamount);
-    console.log(`thisAmount: ${thisAmount}`);
     const Updated = { ...toBeUpdated, ...updateToDoListDto, amount: thisAmount };
-    await this.toDoListRepository.save(Updated);
+    await this.toDoListRepository.update(id, Updated);
   }
 
   async remove(id: string) {

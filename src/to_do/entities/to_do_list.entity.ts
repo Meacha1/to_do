@@ -1,9 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, Tree, TreeParent, TreeChildren } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { IsNumber, IsString } from 'class-validator';
 import { ToDo } from './to_do.entity';
 
 @Entity()
-@Tree('closure-table')
 export class ToDoList {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -20,7 +19,7 @@ export class ToDoList {
     @Column()
     amount: number;
 
-    @TreeParent()
+    @ManyToOne(() => ToDo, toDo => toDo.toDoList)
     parent: ToDo;
 
     @Column()

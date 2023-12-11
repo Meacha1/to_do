@@ -1,10 +1,9 @@
-import { Entity, Column, Tree, PrimaryGeneratedColumn, TreeChildren, TreeParent, TreeLevelColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { IsNumber, IsString } from 'class-validator';
 import { ToDoList } from './to_do_list.entity';
 
 
 @Entity()
-@Tree("materialized-path")
 export class ToDo {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -17,9 +16,6 @@ export class ToDo {
     @Column()
     total: number;
 
-    @TreeParent()
-    parent: ToDo;
-  
-    @TreeChildren()
-    todoLists: ToDoList[];
+    @OneToMany(() => ToDoList, toDoList => toDoList.parent)
+    toDoList: ToDoList[];
 }

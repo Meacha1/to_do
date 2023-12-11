@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, ParseIntPipe } from '@nestjs/common';
 import { ToDoListService } from './to_do_list.service';
 import { CreateToDoListDto } from './dto/create-to_do_list.dto';
 import { UpdateToListDoDto } from './dto/update-to_do_list.dto';
@@ -8,7 +8,7 @@ export class ToDoListController {
   constructor(private readonly toDoListService: ToDoListService) {}
 
   @Post()
-  create(@Body() createToDoListDto: CreateToDoListDto) {
+  create(@Body(ValidationPipe) createToDoListDto: CreateToDoListDto) {
     return this.toDoListService.create(createToDoListDto);
   }
 
@@ -18,7 +18,7 @@ export class ToDoListController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateToDoListDto: UpdateToListDoDto) {
+  update(@Param('id') id: string, @Body(ValidationPipe) updateToDoListDto: UpdateToListDoDto) {
     return this.toDoListService.update(id, updateToDoListDto);
   }
 
