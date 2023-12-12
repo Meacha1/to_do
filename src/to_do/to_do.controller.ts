@@ -17,17 +17,10 @@ export class ToDoController {
     return this.toDoService.findAll();
   }
 
-  @Get('/:toDoTitle/:id')
-  findMyToDoList(@Param('id') id: string, @Param('toDoTitle') toDoTitle: string) {
-    return this.toDoService.findMyToDoList(toDoTitle, id);
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.toDoService.findOne(id);
   }
-
-
 
   @Patch(':id')
   update(@Param('id') id: string, @Body(ValidationPipe) updateToDoDto: UpdateToDoDto) {
